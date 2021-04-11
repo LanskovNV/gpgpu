@@ -1,12 +1,12 @@
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-
 // #include <vld.h>
 #include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <exception>
 #include <random>
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+#include "MyCudaErrorHandler.h"
 
 typedef double type_t;
 
@@ -18,58 +18,6 @@ void matrixRelease(type_t *matrix);
 type_t maxDiff(type_t* a, type_t* b);
 float multiplyWithCPU(type_t* a, type_t* b, type_t* c);
 float multiplyWithCuda(type_t* a, type_t* b, type_t* c);
-
-namespace MyCudaErrorHandler
-{
-    enum errorCodes
-    {
-        CUDA_START,
-        CUDA_MALLOC,
-        CUDA_MEMCPY,
-        CUDA_LAUNCH_KERNEL,
-        CUDA_DEVICE_SYNCHRONIZE,
-    };
-
-    class MyCudaException : public std::exception
-    {
-        cudaError_t status;
-        errorCodes err;
-    public:
-        MyCudaException(errorCodes errorType, cudaError_t& cudaStatus) : err(errorType), status(cudaStatus) {};
-
-        void printInfo()
-        {
-            switch (err)
-            {
-            case CUDA_START:
-                std::cout << "\ncudaSetDevice failed!\n Do you have a CUDA-capable GPU installed?\n";
-                break;
-            case CUDA_MALLOC:
-                std::cout << "cudaMalloc failed!";
-                break;
-            case CUDA_MEMCPY:
-                std::cout << "cudaMemcpy failed!";
-                break;
-            case CUDA_LAUNCH_KERNEL:
-                std::cout << "addKernel launch failed: " << cudaGetErrorString(status) << std::endl;
-                break;
-            case CUDA_DEVICE_SYNCHRONIZE:
-                std::cout << "cudaDeviceSynchronize returned error code " << status << " after launching addKernel!\n";
-                break;
-            default:
-                std::cout << "Unsupported error type!!!\n" << cudaGetErrorString(status);
-            }
-        }
-    };
-
-    void checkCudaStatus(errorCodes errorType, cudaError_t& cudaStatus)
-    {
-        if (cudaStatus != cudaSuccess)
-            throw MyCudaException(errorType, cudaStatus);
-    }
-}
-
-
 
 __global__ void multiplyKernel(type_t* a, type_t* b, type_t* c)
 {
