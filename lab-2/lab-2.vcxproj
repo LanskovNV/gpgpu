@@ -79,12 +79,16 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="main.cpp" />
+    <CudaCompile Include="matrixMultipication.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="matrix.h" />
+    <ClInclude Include="matrixMultiplication.cuh" />
     <ClInclude Include="MyCudaErrorHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="MyCudaErrorHandelr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
